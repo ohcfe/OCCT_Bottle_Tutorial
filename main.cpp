@@ -5,10 +5,6 @@
 #include "Standard_Handle.hxx"
 
 
-// OCCT Modeling API headers
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <TopoDS_Shape.hxx>
-
 // OCCT STEP Exchange headers
 #include <STEPControl_Writer.hxx>
 #include <IFSelect_ReturnStatus.hxx>
@@ -22,22 +18,13 @@ namespace occ {
 int main(int argc, char* argv[]) {
     std::cout << "Initializing Open CASCADE Example..." << std::endl;
     if (argc != 3){
-	std::cout << "Please supply 3 floats" << std::endl;
+	std::cout << "Please supply 3 floats for the bottle dimensions" << std::endl;
 	}
 
-    // 1. Define dimensions (Width, Depth, Height)
-    Standard_Real dx = 100.0;
-    Standard_Real dy = 50.0;
-    Standard_Real dz = 30.0;
-
-    // 2. Generate a 3D solid box shape
-    std::cout << "Creating a 3D solid box..." << std::endl;
-    BRepPrimAPI_MakeBox boxMaker(dx, dy, dz);
-    TopoDS_Shape boxShape = boxMaker.Shape();
     TopoDS_Shape bottleShape = MakeBottle(atof(argv[1]), atof(argv[2]), atof(argv[3]));
 
     // 3. Export the created shape to a STEP file
-    std::cout << "Exporting shape to 'minimal_box.stp'..." << std::endl;
+    std::cout << "Exporting shape to 'OCCT_Bottle.stp'..." << std::endl;
     STEPControl_Writer writer;
     
     // Transfer the topology data to the STEP translator
@@ -49,7 +36,7 @@ int main(int argc, char* argv[]) {
     }
 
     // Write the data to the physical disk file
-    IFSelect_ReturnStatus writeStatus = writer.Write("minimal_box.stp");
+    IFSelect_ReturnStatus writeStatus = writer.Write("OCCT_Bottle.stp");
     
     if (writeStatus == IFSelect_RetDone) {
         std::cout << "Success! File exported successfully." << std::endl;
