@@ -1,4 +1,9 @@
 #include <iostream>
+#include <stdlib.h>
+
+// OCCT main handle
+#include "Standard_Handle.hxx"
+
 
 // OCCT Modeling API headers
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -7,9 +12,18 @@
 // OCCT STEP Exchange headers
 #include <STEPControl_Writer.hxx>
 #include <IFSelect_ReturnStatus.hxx>
+#include "MakeBottle.cpp"
 
-int main() {
+namespace occ {
+	template <class T>
+	using handle = opencascade::handle<T>;
+}
+
+int main(int argc, char* argv[]) {
     std::cout << "Initializing Open CASCADE Example..." << std::endl;
+    if (argc != 3){
+	std::cout << "Please supply 3 floats" << std::endl;
+	}
 
     // 1. Define dimensions (Width, Depth, Height)
     Standard_Real dx = 100.0;
@@ -20,13 +34,14 @@ int main() {
     std::cout << "Creating a 3D solid box..." << std::endl;
     BRepPrimAPI_MakeBox boxMaker(dx, dy, dz);
     TopoDS_Shape boxShape = boxMaker.Shape();
+    TopoDS_Shape bottleShape = MakeBottle(atof(argv[1]), atof(argv[2]), atof(argv[3]));
 
     // 3. Export the created shape to a STEP file
     std::cout << "Exporting shape to 'minimal_box.stp'..." << std::endl;
     STEPControl_Writer writer;
     
     // Transfer the topology data to the STEP translator
-    IFSelect_ReturnStatus transferStatus = writer.Transfer(boxShape, STEPControl_AsIs);
+    IFSelect_ReturnStatus transferStatus = writer.Transfer(bottleShape, STEPControl_AsIs);
     
     if (transferStatus != IFSelect_RetDone) {
         std::cerr << "Error: Failed to translate shape to STEP format." << std::endl;
