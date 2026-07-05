@@ -17,8 +17,9 @@ namespace occ {
 
 int main(int argc, char* argv[]) {
     std::cout << "Initializing Open CASCADE Example..." << std::endl;
-    if (argc != 3){
+    if (argc != 4){
 	std::cout << "Please supply 3 floats for the bottle dimensions" << std::endl;
+        return 1;
 	}
 
     TopoDS_Shape bottleShape = MakeBottle(atof(argv[1]), atof(argv[2]), atof(argv[3]));
